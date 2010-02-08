@@ -95,7 +95,7 @@ java -jar .build/closure.jar --js comp.js --js_output_file min.js
 [ ! -d 'sc' ] && mkdir sc
 
 echo "Generating PHP for Shortcodes..."
-echo '' > sc/.php
+echo -n '' > sc/.php
 for i in $shortcodes ; do
 	if [ -e sc/$i/$i.php ] ; then
 		echo "include(sc/$i/$i.php);" >> sc/.php
