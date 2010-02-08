@@ -1,0 +1,108 @@
+#!/bin/bash
+# Basetheme build system
+# Copyright (C) 2010 Josh Channings <randomblast@googlemail.com>
+
+backend=../../plugins/themebase
+
+cleanup()
+{
+	rm comp.less comp.css comp.js 2>/dev/null
+}
+
+fail()
+{
+	cleanup
+	echo "BUILD FAILED"
+	exit 1
+}
+
+# Check we have a copy of the plugin available
+[ ! -d $backend ] && \
+	echo "Themebase plugin not found... quitting" && exit
+
+# Check we have a working java
+which java > /dev/null
+[ $? -ne 0 ] && echo "Couldn't find a working Java... quitting" && exit
+
+# Check we have a working lessc
+which lessc > /dev/null
+[ $? -ne 0 ] && echo "Couldn't find a working Less CSS... quitting" && exit
+
+
+# Get the names of our shortcodes
+for i in $(ls -d sc/* $backend/sc/* 2>/dev/null | sed -e 's!.*/!!;') ; do
+	echo $shortcodes | grep -wqv $i && \
+		shortcodes="$shortcodes $i"
+done
+
+
+# Fetch the CSS from the shortcodes
+echo "Fetching Shortcode Less files..."
+
+for i in $shortcodes ; do
+	echo -ne "\t$i... "
+	less=
+
+	# Build a list of less files. In case of duplicate files, use the theme version
+	for j in sc/$i/*.less $backend/sc/$i/*.less ; do
+		echo $less | sed -e 's!.*/!!;' | grep -wqv $(echo $j | sed -e 's!.*/!!;') && \
+			less="$less $j"
+	done
+
+	cat $less >> comp.less 2>/dev/null
+
+	echo "done"
+done
+
+
+echo "Fetching Less files from src..."
+cat src/*.less > comp.less 2>/dev/null
+
+
+echo "Compiling Less into CSS"
+lessc comp.less comp.css
+
+
+echo "Minifying CSS..."
+java -jar .build/yui.jar comp.css -o min.css
+[ $? -ne 0 ] && fail
+
+# Fetch the Javascript from the shortcodes
+echo "Fetching Shortcode Javascript files..."
+
+echo '' > comp.js
+for i in $shortcodes ; do
+	echo -ne "\t$i... "
+	js=
+
+	# Build a list of less files. In case of duplicate files, use the theme version
+	for j in sc/$i/*.js $backend/sc/$i/*.js ; do
+		echo $js | sed -e 's!.*/!!;' | grep -wqv $(echo $j | sed -e 's!.*/!!;') && \
+			js="$js $j"
+	done
+
+	cat $js >> comp.js 2>/dev/null
+
+	echo "done"
+done
+
+
+echo "Compiling Javascript..."
+java -jar .build/closure.jar --js comp.js --js_output_file min.js
+[ $? -ne 0 ] && fail
+
+
+echo "Generating PHP for Shortcodes..."
+echo '<? ' > sc/.php
+for i in $shortcodes ; do
+	if [ -e sc/$i/$i.php ] ; then
+		echo "include(sc/$i/$i.php);" >> sc/.php
+	else
+		echo "include('$backend/sc/$i/$i.php');" >> sc/.php
+	fi
+done
+echo ' ?>' >> sc/.php
+
+
+cleanup
+echo "Build Successful."

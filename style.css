@@ -1,0 +1,12 @@
+/*   
+Theme Name: Basetheme
+Theme URI: 
+Description: Provides a starting point and build system for use with Themebase
+Author: Josh Channings
+Template: 
+Version: 0.1
+*/
+/*
+ * The build system is based on the YUI compressor, Google's Closure compiler, and Less CSS,
+ * therefore you must have a working Java and Ruby to use it.
+ */
