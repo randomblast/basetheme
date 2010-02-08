@@ -6,7 +6,7 @@ backend=../../plugins/themebase
 
 cleanup()
 {
-	rm sc/.php comp.less comp.css comp.js 2>/dev/null
+	rm comp.less comp.css comp.js 2>/dev/null
 }
 
 fail()
@@ -91,9 +91,11 @@ echo "Compiling Javascript..."
 java -jar .build/closure.jar --js comp.js --js_output_file min.js
 [ $? -ne 0 ] && fail
 
+# Make sure 'sc' directory exists
+[ ! -d 'sc' ] && mkdir sc
 
 echo "Generating PHP for Shortcodes..."
-echo '<? ' > sc/.php
+echo '' > sc/.php
 for i in $shortcodes ; do
 	if [ -e sc/$i/$i.php ] ; then
 		echo "include(sc/$i/$i.php);" >> sc/.php
@@ -101,7 +103,6 @@ for i in $shortcodes ; do
 		echo "include('$backend/sc/$i/$i.php');" >> sc/.php
 	fi
 done
-echo ' ?>' >> sc/.php
 
 
 cleanup
