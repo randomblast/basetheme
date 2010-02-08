@@ -6,7 +6,7 @@ backend=../../plugins/themebase
 
 cleanup()
 {
-	rm comp.less comp.css comp.js 2>/dev/null
+	rm sc/.php comp.less comp.css comp.js 2>/dev/null
 }
 
 fail()
