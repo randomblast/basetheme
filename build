@@ -73,7 +73,7 @@ echo "Fetching Shortcode Javascript files..."
 echo '' > comp.js
 for i in $shortcodes ; do
 	echo -ne "\t$i... "
-	js=
+	js=src/*.js
 
 	# Build a list of less files. In case of duplicate files, use the theme version
 	for j in sc/$i/*.js $backend/sc/$i/*.js ; do
