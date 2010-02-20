@@ -99,9 +99,9 @@ echo '<? ' > sc/.php
 for i in $shortcodes ; do
 	if [ -e sc/$i/$i.php ] ; then
 		echo "include('$i/$i.php');" >> sc/.php
-	else
+	else if [ -e $backend/sc/$i/$i.php ] ; then
 		echo "include('$backend/sc/$i/$i.php');" >> sc/.php
-	fi
+	fi fi
 done
 echo -n ' ?>' >> sc/.php
 
