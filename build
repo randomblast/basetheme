@@ -36,6 +36,10 @@ for i in $(ls -d sc/* $backend/sc/* 2>/dev/null | sed -e 's!.*/!!;') ; do
 done
 
 
+echo "Fetching Less files from src..."
+cat src/*.less >> comp.less 2>/dev/null
+
+
 # Fetch the CSS from the shortcodes
 echo "Fetching Shortcode Less files..."
 
@@ -44,7 +48,7 @@ for i in $shortcodes ; do
 	less=
 
 	# Build a list of less files. In case of duplicate files, use the theme version
-	for j in sc/$i/*.less $backend/sc/$i/*.less ; do
+	for j in sc/$i/*.less $(ls $backend/sc/$i/*.less 2>/dev/null ) ; do
 		echo $less | sed -e 's!.*/!!;' | grep -wqv $(echo $j | sed -e 's!.*/!!;') && \
 			less="$less $j"
 	done
@@ -53,10 +57,6 @@ for i in $shortcodes ; do
 
 	echo "done"
 done
-
-
-echo "Fetching Less files from src..."
-cat src/*.less > comp.less 2>/dev/null
 
 
 echo "Compiling Less into CSS"
