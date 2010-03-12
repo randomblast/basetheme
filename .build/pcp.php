@@ -367,7 +367,8 @@ EOF;
 		/// Return a string representing the state of the engine
 		function cache()
 		{
-			return serialize($state);
+			if($this->state)
+				return serialize($this->state);
 		}
 
 		/**
