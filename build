@@ -24,11 +24,6 @@ fail()
 which java > /dev/null
 [ $? -ne 0 ] && echo "Couldn't find a working Java... quitting" && exit
 
-# Check we have a working lessc
-which lessc > /dev/null
-[ $? -ne 0 ] && echo "Couldn't find a working Less CSS... quitting" && exit
-
-
 # Get the names of our shortcodes
 for i in $(ls -d sc/* $backend/sc/* 2>/dev/null | sed -e 's!.*/!!;') ; do
 	echo $shortcodes | grep -wqv $i && \
@@ -36,8 +31,8 @@ for i in $(ls -d sc/* $backend/sc/* 2>/dev/null | sed -e 's!.*/!!;') ; do
 done
 
 
-echo "Fetching Less files from src..."
-cat src/*.less >> comp.less 2>/dev/null
+echo "Fetching PCP files from src..."
+pcp=src/*.pcp
 
 
 # Fetch the CSS from the shortcodes
@@ -49,23 +44,17 @@ for i in $shortcodes ; do
 
 	# Build a list of less files. In case of duplicate files, use the theme version
 	for j in sc/$i/*.less $(ls $backend/sc/$i/*.less 2>/dev/null ) ; do
-		echo $less | sed -e 's!.*/!!;' | grep -wqv $(echo $j | sed -e 's!.*/!!;') && \
-			less="$less $j"
+		echo $pcp | sed -e 's!.*/!!;' | grep -wqv $(echo $j | sed -e 's!.*/!!;') && \
+			pcp="$pcp $j"
 	done
-
-	cat $less >> comp.less 2>/dev/null
 
 	echo "done"
 done
 
 
-echo "Compiling Less into CSS"
-lessc comp.less comp.css
+echo "Compiling PCP into CSS"
+.build/pcp.php -c .build/pcp-cache -o min.css $pcp
 
-
-echo "Minifying CSS..."
-java -jar .build/yui.jar comp.css -o min.css
-[ $? -ne 0 ] && fail
 
 # Fetch the Javascript from the shortcodes
 echo "Fetching Shortcode Javascript files..."
