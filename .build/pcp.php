@@ -3,13 +3,13 @@
 	/**
 	 * @file pcp.php
 	 * @package PCP: CSS Preprocessor
-	 * @version 0.1
+	 * @version 0.1.4
 	 * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
 	 * @license LGPLv3
 	 */
 
 	global $pcp;
-	if($argv) main();
+	if(basename($argv[0]) == basename(__FILE__)) main();
 
 	/**
 	 * CLI entry point
@@ -25,7 +25,8 @@
 
 		// Help/usage message
 		if(
-			   in_array(array('-h', '--help'), $argv)
+			   in_array('-h', $argv)
+			|| in_array('--help', $argv)
 			|| $argc == 1
 			|| !$output
 		){
@@ -621,23 +622,28 @@ EOF;
 
 			return $this->deps;
 		}
-		static function compute($value)
+		static function compute($value, $prev_word = null)
 		{
-			$literal = '\s*([\d\.]+)(px|em|rad|%)?\s*';
+			$literal = '([\d\.]+)(px|em|rad|%)?';
+
+			if(false === strpos($value, array('(', '/', '*', '-', '+')) && $prev_word)
+				return "$prev_word(".PCP_Property::compute($value).")";
 
 			return preg_replace(
 				array(
-					  '/\((.*)\)/e'						// Reduce parentheses
-					, "/{$literal}\/{$literal}/e"		// Division
-					, "/{$literal}\*{$literal}/e"		// Multiplication
-					, "/{$literal}\-{$literal}/e"		// Subtraction
-					, "/{$literal}\+{$literal}/e"		// Addition
+					  '/([\w-]*)\s*\((.*)\)/e'			// Reduce parentheses
+					, "/{$literal}\s*\/\s*{$literal}/e"	// Division
+					, "/{$literal}\s*\*\s*{$literal}/e"	// Multiplication
+					, "/{$literal}\s*\-\s+{$literal}/e"	// Subtraction
+					, "/{$literal}\s*\+\s*{$literal}/e"	// Addition
+					, '/\s/'
 				), array(
-					  'PCP_Property::compute("$1")'
+					  'PCP_Property::compute("$2", "$1")'
 					, '$3 != 0 ? ($1 / $3)."$2" : null'
 					, '($1 * $3)."$2"'
 					, '($1 - $3)."$2"'
 					, '($1 + $3)."$2"'
+					, ''
 				), $value);
 		}
 	}
