@@ -36,14 +36,13 @@ pcp=src/*.pcp
 
 
 # Fetch the CSS from the shortcodes
-echo "Fetching Shortcode Less files..."
+echo "Fetching Shortcode PCP files..."
 
 for i in $shortcodes ; do
 	echo -ne "\t$i... "
-	less=
 
 	# Build a list of less files. In case of duplicate files, use the theme version
-	for j in sc/$i/*.less $(ls $backend/sc/$i/*.less 2>/dev/null ) ; do
+	for j in sc/$i/*.pcp $(ls $backend/sc/$i/*.pcp 2>/dev/null ) ; do
 		echo $pcp | sed -e 's!.*/!!;' | grep -wqv $(echo $j | sed -e 's!.*/!!;') && \
 			pcp="$pcp $j"
 	done
