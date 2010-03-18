@@ -86,7 +86,7 @@ echo "Generating PHP for Shortcodes..."
 echo '<? ' > .build/sc.php
 for i in $shortcodes ; do
 	if [ -e sc/$i/$i.php ] ; then
-		echo "include('$i/$i.php');" >> .build/sc.php
+		echo "include(__DIR__'/../sc/$i/$i.php');" >> .build/sc.php
 	else if [ -e $backend/sc/$i/$i.php ] ; then
 		echo "include('$backend/sc/$i/$i.php');" >> .build/sc.php
 	fi fi
