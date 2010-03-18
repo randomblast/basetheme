@@ -3,7 +3,7 @@
 /**
  * @file pcp.php
  * @package PCP: CSS Preprocessor
- * @version 0.2.1
+ * @version 0.2.2
  * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
  * @license LGPLv3
  */
@@ -19,9 +19,9 @@ function main()
 	global $pcp, $argc, $argv;
 
 	// Get filenames from options
-	$diff = $argv[array_search('-d', $argv) + 1];
-	$cache = $argv[array_search('-c', $argv) + 1];
-	$output = $argv[array_search('-o', $argv) + 1];
+	$diff = ($n = array_search('-d', $argv)) ? $argv[$n + 1] : null;
+	$cache = ($n = array_search('-c', $argv)) ? $argv[$n + 1] : null;
+	$output = ($n = array_search('-o', $argv)) ? $argv[$n + 1] : null;
 
 	// Help/usage message
 	if(
@@ -177,9 +177,9 @@ class PCP
 
 							// Add selector to stack
 							if(count($selector))
-								array_push($selector, end($selector).'>'.$sels[0]);
+								array_push($selector, end($selector).'>'.PCP::clean_token($sels[0]));
 							else
-								array_push($selector, $sels[0]);
+								array_push($selector, PCP::clean_token($sels[0]));
 
 							// Instantiate PCP_Selector for new name
 							if(!isset($this->state['selectors'][end($selector)]))
@@ -677,14 +677,14 @@ private function remove_dependant(&$p)
 				, "/{$literal}\s*\*\s*{$literal}/e"	// Multiplication
 				, "/{$literal}\s*\-\s+{$literal}/e"	// Subtraction
 				, "/{$literal}\s*\+\s*{$literal}/e"	// Addition
-				, '/\s/'
+				, '/\s\s+/'
 			), array(
 				  'PCP_Property::compute("$2", "$1")'
 				, '$3 != 0 ? ($1 / $3)."$2" : null'
 				, '($1 * $3)."$2"'
 				, '($1 - $3)."$2"'
 				, '($1 + $3)."$2"'
-				, ''
+				, ' '
 			), $value);
 	}
 }
