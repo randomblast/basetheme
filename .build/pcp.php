@@ -3,7 +3,7 @@
 /**
  * @file pcp.php
  * @package PCP: CSS Preprocessor
- * @version 0.3
+ * @version 0.3.1
  * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
  * @license LGPLv3
  */
@@ -602,13 +602,13 @@ private function remove_dependant(&$p)
 		$this->deps = array();
 
 		// Find variables and PCP expressions in value
-		preg_match_all('/(<|\$)[\w-]*|[\w-+#>\.]*\s*->\s*[\w-]*/', $this->value, $matches);
+		preg_match_all('/(<|\$)[\w-]*|[\w-+#>\.]*\s*->\s*\$?[\w-]*/', $this->value, $matches);
 
 		// Loop through found $ tokens
 		foreach($matches[0] as $dep)
 		{
 			// Parse tokens into selector->property pairs or just property names
-			preg_match('/([\w-+#>\.]*)\s*->\s*([\w-]*)\s*|(\$[\w-]*)|(^<*[\w-]*)/', $dep, $splitdep);
+			preg_match('/([\w-+#>\.]*)\s*->\s*(\$?[\w-]*)\s*|(\$[\w-]*)|(^<*[\w-]*)/', $dep, $splitdep);
 
 			if($splitdep[4]) // <property-name form
 			{
