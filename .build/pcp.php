@@ -3,7 +3,7 @@
 /**
  * @file pcp.php
  * @package PCP: CSS Preprocessor
- * @version 0.2.4
+ * @version 0.2.5
  * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
  * @license LGPLv3
  */
@@ -621,7 +621,7 @@ private function remove_dependant(&$p)
 
 				$pname = preg_replace('/^<*/', '', $splitdep[4]);
 
-				$this->deps[$dep] = $pcp->state['selectors'][$scope][$pname];
+				$this->deps[$dep] = $pcp->state['selectors'][$scope]->properties[$pname];
 
 			} else if($splitdep[3]) // $property-name form
 			{
