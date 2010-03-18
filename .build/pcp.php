@@ -3,7 +3,7 @@
 /**
  * @file pcp.php
  * @package PCP: CSS Preprocessor
- * @version 0.2.3
+ * @version 0.2.4
  * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
  * @license LGPLv3
  */
@@ -297,7 +297,7 @@ class PCP
 							break;
 
 						case "\n":	// Newline
-							$buf .= ' ';
+							$buf .= "\n";
 							$ln++;
 							$cn = 0;
 							break;
@@ -428,7 +428,7 @@ class PCP
 				, '/^\s+/'				// Strip whitespace from beginning
 				, '/\s+$/'				// Strip whitespace from end
 				, '/\/\*.*?\*\//'		// /* Comment */
-				, '/\/\/.*?$/'			// // Comment
+				, '/\/\/.*$/m'			// // Comment
 			), array(
 				  '>'
 				, '+'
