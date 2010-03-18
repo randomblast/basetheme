@@ -3,7 +3,7 @@
 /**
  * @file pcp.php
  * @package PCP: CSS Preprocessor
- * @version 0.2.2
+ * @version 0.2.3
  * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
  * @license LGPLv3
  */
@@ -406,10 +406,8 @@ class PCP
 
 			echo '}';
 
-			if(!$empty)
-				echo ob_get_clean();
-			else
-				ob_clean();
+			if(!$empty) echo ob_get_clean();
+			else ob_end_clean();
 		}
 
 		return ob_get_clean();
