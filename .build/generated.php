@@ -6,9 +6,4 @@
 
 	 // Shortcodes
 	require_once('sc.php');
-
-	// PCP
-	ob_start();
-	require_once('pcp.php');
-	ob_end_clean();
 ?>

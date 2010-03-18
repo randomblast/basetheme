@@ -52,7 +52,7 @@ done
 
 
 echo "Compiling PCP into CSS"
-.build/pcp.php -c .build/pcp-cache -o min.css $pcp
+$backend/pcp.php -c .build/pcp-cache -o min.css $pcp
 
 
 # Fetch the Javascript from the shortcodes
