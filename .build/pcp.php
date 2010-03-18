@@ -3,7 +3,7 @@
 /**
  * @file pcp.php
  * @package PCP: CSS Preprocessor
- * @version 0.2
+ * @version 0.2.1
  * @copyright 2010 Josh Channings <josh+pcp@channings.me.uk>
  * @license LGPLv3
  */
@@ -633,7 +633,7 @@ private function remove_dependant(&$p)
 				$n = 1;
 				while($n)
 				{
-					if(isset($pcp->state['selectors'][$scope][$splitdep[3]]))
+					if(isset($pcp->state['selectors'][$scope]->properties[$splitdep[3]]))
 					{
 						$this->deps[$dep] =
 							$pcp->state['selectors'][$scope]->properties[$splitdep[3]];
